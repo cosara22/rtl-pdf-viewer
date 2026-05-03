@@ -1,0 +1,21 @@
+# 依存パッケージ
+node_modules/
+
+# ビルド成果物
+out/
+*.vsix
+
+# PDF.js本体（npm run setupで取得するためコミット不要）
+media/pdfjs/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
+
+# VS Code（launch.json等は残す）
+.vscode-test/
+
+# 一時ファイル
+*.tmp
+*.swp

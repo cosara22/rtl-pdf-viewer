@@ -1,0 +1,164 @@
+/* RTL PDF Viewer スタイル */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--vscode-editor-background, #1e1e1e);
+  color: var(--vscode-editor-foreground, #d4d4d4);
+  font-family: var(--vscode-font-family, 'Segoe UI', sans-serif);
+}
+
+/* ツールバー */
+#toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: var(--vscode-editorWidget-background, #252526);
+  border-bottom: 1px solid var(--vscode-editorWidget-border, #3c3c3c);
+  flex-shrink: 0;
+  height: 40px;
+}
+
+#toolbar button {
+  background-color: var(--vscode-button-secondaryBackground, #3a3d41);
+  color: var(--vscode-button-secondaryForeground, #ffffff);
+  border: none;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+#toolbar button:hover:not(:disabled) {
+  background-color: var(--vscode-button-secondaryHoverBackground, #45494e);
+}
+
+#toolbar button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#toolbar .separator {
+  color: var(--vscode-descriptionForeground, #888);
+  margin: 0 4px;
+}
+
+#page-indicator,
+#zoom-indicator {
+  font-size: 12px;
+  min-width: 60px;
+  text-align: center;
+  color: var(--vscode-descriptionForeground, #cccccc);
+}
+
+/* ビューア領域 */
+#viewer-container {
+  width: 100%;
+  height: calc(100vh - 40px);
+  position: relative;
+}
+
+#viewer {
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+}
+
+/* === 横スクロール × 右→左 === */
+body[data-scroll="horizontal"] #viewer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+
+/* 右→左方向にページを並べる */
+body[data-scroll="horizontal"][data-direction="rtl"] #viewer {
+  direction: rtl;
+}
+
+body[data-scroll="horizontal"][data-direction="ltr"] #viewer {
+  direction: ltr;
+}
+
+/* === 縦スクロール === */
+body[data-scroll="vertical"] #viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* ページ */
+.pdf-page {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  direction: ltr; /* canvas自体は通常の向き */
+}
+
+.pdf-page canvas {
+  display: block;
+}
+
+/* ローディング */
+#loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: var(--vscode-descriptionForeground, #888);
+  z-index: 10;
+}
+
+#loading.hidden {
+  display: none;
+}
+
+/* スクロールバーのカスタマイズ */
+#viewer::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+#viewer::-webkit-scrollbar-track {
+  background: var(--vscode-scrollbarSlider-background, #2a2a2a);
+}
+
+#viewer::-webkit-scrollbar-thumb {
+  background: var(--vscode-scrollbarSlider-hoverBackground, #5a5a5a);
+  border-radius: 7px;
+}
+
+#viewer::-webkit-scrollbar-thumb:hover {
+  background: var(--vscode-scrollbarSlider-activeBackground, #787878);
+}
+
+/* 見開き表示モード */
+body[data-spread="true"] .pdf-page-pair {
+  display: inline-flex;
+  flex-direction: row;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+body[data-spread="true"][data-direction="rtl"] .pdf-page-pair {
+  flex-direction: row-reverse;
+}

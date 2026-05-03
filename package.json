@@ -1,0 +1,95 @@
+{
+  "name": "rtl-pdf-viewer",
+  "displayName": "RTL PDF Viewer",
+  "description": "右から左へ横スクロールできるPDFビューア（漫画・縦書き和書スタイル）",
+  "version": "0.0.1",
+  "publisher": "zeroz",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "rtlPdfViewer.viewer",
+        "displayName": "RTL PDF Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.pdf"
+          }
+        ],
+        "priority": "option"
+      }
+    ],
+    "commands": [
+      {
+        "command": "rtlPdfViewer.toggleDirection",
+        "title": "RTL PDF: ページめくり方向を切り替え"
+      },
+      {
+        "command": "rtlPdfViewer.toggleScrollMode",
+        "title": "RTL PDF: スクロール方向を切り替え（縦/横）"
+      }
+    ],
+    "configuration": {
+      "title": "RTL PDF Viewer",
+      "properties": {
+        "rtlPdfViewer.readingDirection": {
+          "type": "string",
+          "enum": [
+            "rtl",
+            "ltr"
+          ],
+          "enumDescriptions": [
+            "右から左へ（和書・漫画スタイル）",
+            "左から右へ（洋書スタイル）"
+          ],
+          "default": "rtl",
+          "description": "ページめくりの方向"
+        },
+        "rtlPdfViewer.scrollMode": {
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "enumDescriptions": [
+            "横スクロール",
+            "縦スクロール"
+          ],
+          "default": "horizontal",
+          "description": "スクロールの方向"
+        },
+        "rtlPdfViewer.spread": {
+          "type": "boolean",
+          "default": false,
+          "description": "見開き表示を有効にする"
+        },
+        "rtlPdfViewer.defaultScale": {
+          "type": "number",
+          "default": 1.5,
+          "minimum": 0.5,
+          "maximum": 3.0,
+          "description": "初期表示倍率"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "setup": "node ./scripts/download-pdfjs.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}
