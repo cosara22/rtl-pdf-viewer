@@ -9,7 +9,7 @@ VS Code Marketplace への公開手順とリリース運用ガイド。
 1. https://dev.azure.com/ にアクセス
 2. Microsoft アカウント（GitHub と同じメールでも別でもOK）でサインイン
 3. 「New organization」をクリックして組織を作成
-   - 組織名は何でもOK（例: `cosara22-org`）
+   - 組織名: **`StockCompass`**
    - リージョンは「Japan」推奨
 
 ### Step 2: Personal Access Token (PAT) を発行
@@ -37,7 +37,7 @@ VS Code Marketplace への公開手順とリリース運用ガイド。
    | 項目 | 値 |
    |------|---|
    | ID | `cosara` ⚠️ package.json の `"publisher"` と完全一致させる必要あり |
-   | Name | `cosara`（表示名、自由に変更可） |
+   | Name | **`StockCompass`**（Marketplace上に表示される組織/発行者名） |
    | Email | cosara857@gmail.com |
 
 5. 規約に同意して作成
