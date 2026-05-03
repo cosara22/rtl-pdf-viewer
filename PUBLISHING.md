@@ -36,13 +36,13 @@ VS Code Marketplace への公開手順とリリース運用ガイド。
 
    | 項目 | 値 |
    |------|---|
-   | ID | `zeroz` ⚠️ package.json の `"publisher"` と完全一致させる必要あり |
-   | Name | `zeroz`（表示名、自由） |
+   | ID | `cosara` ⚠️ package.json の `"publisher"` と完全一致させる必要あり |
+   | Name | `cosara`（表示名、自由に変更可） |
    | Email | cosara857@gmail.com |
 
 5. 規約に同意して作成
 
-> ⚠️ **`zeroz` が既に他の人に取られていた場合**: package.json の `"publisher"` を別の名前（例: `zeroz-rtl`）に変更し、その名前で Publisher を登録してください。
+> ⚠️ **`cosara` が既に他の人に取られていた場合**: package.json の `"publisher"` を別の名前（例: `cosara-dev`）に変更し、その名前で Publisher を登録してください。
 
 ### Step 4: GitHub Actions に PAT をシークレット登録
 
@@ -93,7 +93,7 @@ npm run package
 
 ### C. 公開済みバージョンを確認
 
-- Marketplace: https://marketplace.visualstudio.com/items?itemName=zeroz.rtl-pdf-viewer
+- Marketplace: https://marketplace.visualstudio.com/items?itemName=cosara.rtl-pdf-viewer
 - GitHub Releases: https://github.com/cosara22/rtl-pdf-viewer/releases
 
 ---
