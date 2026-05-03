@@ -2,6 +2,10 @@
 
 **English** | [日本語](./README.ja.md)
 
+[![CI](https://github.com/cosara22/rtl-pdf-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/cosara22/rtl-pdf-viewer/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/cosara22/rtl-pdf-viewer?include_prereleases)](https://github.com/cosara22/rtl-pdf-viewer/releases)
+
 A VS Code custom editor extension that lets you read PDFs with **right-to-left horizontal scrolling** (manga / Japanese vertical-text book style).
 
 ## Features
@@ -184,6 +188,10 @@ These are future enhancement targets.
 ## Contributing
 
 Contributions welcome. Please open an issue first for major changes.
+
+## Publishing
+
+See [PUBLISHING.md](./PUBLISHING.md) for the release workflow and VS Code Marketplace setup.
 
 ## License
 

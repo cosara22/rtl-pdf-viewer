@@ -1,0 +1,65 @@
+# タグ（v*）のpush時にVSIXをビルドし、GitHub Releaseと
+# VS Code Marketplaceへの公開を自動化するワークフロー
+#
+# 使い方:
+#   1. package.json の version を更新
+#   2. git commit -am "Release v0.1.0"
+#   3. git tag v0.1.0
+#   4. git push origin main --tags
+#
+# 必要なシークレット（Settings → Secrets and variables → Actions）:
+#   VSCE_PAT - VS Code Marketplace の Personal Access Token
+#              （未設定でもGitHub Releaseは作成される）
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download PDF.js
+        run: npm run setup
+
+      - name: Compile TypeScript
+        run: npm run compile
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Package VSIX
+        run: npx vsce package --out rtl-pdf-viewer-${{ steps.version.outputs.VERSION }}.vsix
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: rtl-pdf-viewer-${{ steps.version.outputs.VERSION }}.vsix
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+      - name: Publish to VS Code Marketplace
+        if: env.VSCE_PAT != ''
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish --packagePath rtl-pdf-viewer-${{ steps.version.outputs.VERSION }}.vsix
