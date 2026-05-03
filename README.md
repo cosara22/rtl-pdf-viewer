@@ -1,150 +1,190 @@
 # RTL PDF Viewer
 
-VS Code 上で PDF を **右から左への横スクロール**（漫画・縦書き和書スタイル）で読めるカスタムエディタ拡張機能。
+**English** | [日本語](./README.ja.md)
 
-## 主な機能
+A VS Code custom editor extension that lets you read PDFs with **right-to-left horizontal scrolling** (manga / Japanese vertical-text book style).
 
-- ✅ **右→左への横スクロール表示**（和書・漫画スタイル）
-- ✅ **左→右への横スクロール表示**（洋書スタイル）
-- ✅ **縦スクロール表示**（通常モード）
-- ✅ ページ単位ナビゲーション（矢印キー対応）
-- ✅ ズーム（拡大/縮小/幅合わせ）
-- ✅ 設定で初期表示モードを変更可能
-- ✅ ツールバーから即座に方向切り替え
+## Features
 
-## セットアップ手順
+- ✅ **Right-to-left horizontal scrolling** (manga / Japanese book style)
+- ✅ **Left-to-right horizontal scrolling** (Western book style)
+- ✅ **Vertical scrolling** (standard mode)
+- ✅ Page navigation with arrow keys (auto-inverted in RTL mode)
+- ✅ Zoom controls (zoom in / out / fit-to-width)
+- ✅ Configurable defaults via settings
+- ✅ Toolbar for instant direction switching
+- ✅ Lazy page rendering with IntersectionObserver
 
-### 1. 依存パッケージのインストール
+## Why this exists
+
+Adobe Acrobat doesn't have a true horizontal scroll mode, and most PDF readers don't combine **horizontal scroll + RTL page order** — the natural way to read manga or Japanese books. Specialized comic readers exist (SumatraPDF, Honeyview), but if you live inside VS Code, switching apps just to read a book breaks the flow. This extension brings that reading experience directly into the editor.
+
+## Setup
+
+### 1. Install dependencies
 
 ```powershell
-cd "c:\Users\zeroz\Projects\金持ち父さん貧乏父さん\rtl-pdf-viewer"
+cd rtl-pdf-viewer
 npm install
 ```
 
-### 2. PDF.js の取得
+### 2. Download PDF.js
 
 ```powershell
 npm run setup
 ```
 
-`media/pdfjs/` 配下に PDF.js v4.7.76 がダウンロードされます。
+This downloads PDF.js v4.7.76 into `media/pdfjs/`.
 
-### 3. TypeScript のコンパイル
+### 3. Compile TypeScript
 
 ```powershell
 npm run compile
 ```
 
-### 4. デバッグ実行（推奨：開発時）
+### 4. Run in development mode (recommended)
 
-1. VS Code でこの `rtl-pdf-viewer` フォルダを開く
-2. `F5` キーを押す → 拡張機能ホストが新しいウィンドウで起動
-3. 新ウィンドウ側で PDF ファイルを開くと、エディタ選択肢に「RTL PDF Viewer」が表示される
-4. 既定で開きたい場合: PDFを右クリック →「アプリケーションを使って開く」→「RTL PDF Viewer」→「.pdfファイルの既定として構成」
+1. Open the `rtl-pdf-viewer` folder in VS Code
+2. Press `F5` → Extension Development Host opens in a new window
+3. In the new window, open any PDF — "RTL PDF Viewer" appears in the editor selector
+4. To make it default: Right-click PDF → "Open With..." → "RTL PDF Viewer" → "Configure default editor for .pdf"
 
-### 5. パッケージング（インストール用VSIX作成）
+### 5. Package as VSIX
 
 ```powershell
 npm run package
 ```
 
-`rtl-pdf-viewer-0.0.1.vsix` が生成されます。
+Generates `rtl-pdf-viewer-0.0.1.vsix`.
 
-### 6. インストール
+### 6. Install the VSIX
 
 ```powershell
 code --install-extension rtl-pdf-viewer-0.0.1.vsix
 ```
 
-## 使い方
+## Usage
 
-### PDFを RTL Viewer で開く
+### Open a PDF with RTL Viewer
 
-1. PDFファイルを右クリック
-2. **「アプリケーションを使って開く...」**
-3. **「RTL PDF Viewer」** を選択
+1. Right-click a `.pdf` file
+2. **"Open With..."**
+3. Select **"RTL PDF Viewer"**
 
-### ツールバー操作
+### Toolbar
 
-| ボタン | 機能 |
-|--------|------|
-| ◀ 前 / 次 ▶ | ページめくり |
-| − / ＋ | 縮小 / 拡大 |
-| 幅合わせ | 画面幅に合わせる |
-| ↔ 方向 | RTL ⇔ LTR 切替 |
-| ⇅ スクロール | 横 ⇔ 縦 切替 |
-| 📖 見開き | 見開き表示の ON/OFF |
+| Button | Action |
+|--------|--------|
+| ◀ Prev / Next ▶ | Page navigation |
+| − / ＋ | Zoom out / in |
+| Fit Width | Fit page to viewer width |
+| ↔ Direction | Toggle RTL ⇔ LTR |
+| ⇅ Scroll | Toggle horizontal ⇔ vertical |
+| 📖 Spread | Toggle two-page spread |
 
-### キーボードショートカット
+### Keyboard shortcuts (in RTL horizontal mode)
 
-| キー | 動作（RTL横スクロール時） |
-|------|----------------------|
-| `→` | 前のページ（右側にあるため） |
-| `←` | 次のページ（左側にあるため） |
-| `↓` / `Space` / `PageDown` | 次のページ |
-| `↑` / `PageUp` | 前のページ |
-| `Home` | 最初のページ |
-| `End` | 最終ページ |
-| マウスホイール | 横スクロール（縦回転で横移動） |
+| Key | Action |
+|-----|--------|
+| `→` | Previous page (it's on the right) |
+| `←` | Next page (it's on the left) |
+| `↓` / `Space` / `PageDown` | Next page |
+| `↑` / `PageUp` | Previous page |
+| `Home` | Jump to first page |
+| `End` | Jump to last page |
+| Mouse wheel | Horizontal scroll (vertical wheel → horizontal movement) |
 
-## 設定項目
+In LTR or vertical mode, keys map to the natural direction.
 
-`settings.json` で以下が設定可能:
+## Configuration
+
+In `settings.json`:
 
 ```json
 {
   "rtlPdfViewer.readingDirection": "rtl",     // "rtl" or "ltr"
   "rtlPdfViewer.scrollMode": "horizontal",     // "horizontal" or "vertical"
-  "rtlPdfViewer.spread": false,                // 見開き表示
-  "rtlPdfViewer.defaultScale": 1.5             // 0.5〜3.0
+  "rtlPdfViewer.spread": false,                // two-page spread
+  "rtlPdfViewer.defaultScale": 1.5             // 0.5 - 3.0
 }
 ```
 
-## ディレクトリ構成
+## Project structure
 
 ```
 rtl-pdf-viewer/
-├── package.json              # 拡張機能マニフェスト
+├── package.json              # Extension manifest
 ├── tsconfig.json
 ├── .vscodeignore
 ├── src/
-│   └── extension.ts          # CustomEditorProvider実装
+│   └── extension.ts          # CustomEditorProvider implementation
 ├── media/
-│   ├── viewer.html           # （extension.ts内に埋め込み）
-│   ├── viewer.css            # RTL横スクロール用CSS
-│   ├── viewer.js             # PDF.js統合・操作ロジック
-│   └── pdfjs/                # PDF.js本体（setup後）
+│   ├── viewer.css            # RTL horizontal scroll styles
+│   ├── viewer.js             # PDF.js integration & UI logic
+│   └── pdfjs/                # PDF.js (downloaded by setup)
 ├── scripts/
-│   └── download-pdfjs.js     # PDF.jsダウンロードスクリプト
+│   └── download-pdfjs.js     # PDF.js fetch script
 └── .vscode/
     ├── launch.json
     └── tasks.json
 ```
 
-## 既知の制限事項（プロトタイプ）
+## How it works
 
-- 検索機能は未実装
-- テキスト選択は未対応（canvas描画のため）
-- しおり・目次は未対応
-- 大きなPDFでは初期読み込みに時間がかかる可能性あり
-- 日本語埋め込みフォントの含まれていないPDFは文字化けする場合あり（CMap未バンドル）
+The extension registers a `CustomReadonlyEditorProvider` for `.pdf` files. When a PDF is opened, it spins up a WebView that:
 
-これらは将来的な拡張ポイントです。
+1. Loads PDF.js as an ES module
+2. Renders each page to a `<canvas>` element
+3. Arranges canvases in a flex container with `direction: rtl` (or `ltr`)
+4. Uses `overflow-x: auto` to enable horizontal scrolling
+5. Lazy-renders only visible pages via `IntersectionObserver` for performance
 
-## トラブルシューティング
+The key CSS:
 
-### 「RTL PDF Viewer」が選択肢に出ない
-- 拡張機能が正しくインストールされているか確認: `code --list-extensions | findstr rtl-pdf`
-- VS Code を再起動
+```css
+#viewer[data-scroll="horizontal"][data-direction="rtl"] {
+  display: flex;
+  flex-direction: row;
+  direction: rtl;       /* page 1 on the right, page N on the left */
+  overflow-x: auto;
+}
+```
 
-### PDFが真っ白で表示されない
-- 開発者ツールでエラー確認: `Ctrl+Shift+P` → 「Developer: Toggle Developer Tools」
-- `npm run setup` で PDF.js が正しくダウンロードされているか確認
+## Known limitations (prototype)
 
-### コンパイルエラーが出る
-- `npm install` が成功しているか確認
-- `node_modules/@types/vscode` が存在するか確認
+- No text search
+- No text selection (canvas-based rendering)
+- No outline / bookmarks
+- Large PDFs may take time on initial load
+- PDFs without embedded Japanese fonts may display garbled text (CMaps not bundled)
 
-## ライセンス
+These are future enhancement targets.
 
-MIT
+## Troubleshooting
+
+### "RTL PDF Viewer" doesn't appear in the editor selector
+- Verify the extension is installed: `code --list-extensions | findstr rtl-pdf`
+- Restart VS Code
+
+### PDF appears blank
+- Open Developer Tools: `Ctrl+Shift+P` → "Developer: Toggle Developer Tools" → check console errors
+- Verify PDF.js was downloaded: `media/pdfjs/pdf.min.mjs` should exist
+
+### Compile errors
+- Make sure `npm install` succeeded
+- Check `node_modules/@types/vscode` exists
+
+## Tech stack
+
+- **TypeScript** — extension host code
+- **VS Code Custom Editor API** — `CustomReadonlyEditorProvider`
+- **PDF.js** v4.7.76 — Mozilla's PDF rendering engine
+- **WebView API** — sandboxed HTML/CSS/JS rendering
+
+## Contributing
+
+Contributions welcome. Please open an issue first for major changes.
+
+## License
+
+[MIT](./LICENSE)

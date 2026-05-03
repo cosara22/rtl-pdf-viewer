@@ -1,7 +1,7 @@
 {
   "name": "rtl-pdf-viewer",
   "displayName": "RTL PDF Viewer",
-  "description": "右から左へ横スクロールできるPDFビューア（漫画・縦書き和書スタイル）",
+  "description": "Read PDFs with right-to-left horizontal scrolling in VS Code (manga / Japanese book style)",
   "version": "0.0.1",
   "publisher": "zeroz",
   "engines": {
