@@ -2,8 +2,9 @@
   "name": "rtl-pdf-viewer",
   "displayName": "RTL PDF Viewer",
   "description": "Read PDFs with right-to-left horizontal scrolling in VS Code (manga / Japanese book style)",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "cosara",
+  "icon": "media/icon.png",
   "license": "MIT",
   "author": {
     "name": "StockCompass"
