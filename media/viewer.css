@@ -52,11 +52,18 @@ html, body {
 }
 
 #page-indicator,
-#zoom-indicator {
+#zoom-indicator,
+#quality-indicator {
   font-size: 12px;
   min-width: 60px;
   text-align: center;
   color: var(--vscode-descriptionForeground, #cccccc);
+}
+
+#btn-quality {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* ビューア領域 */

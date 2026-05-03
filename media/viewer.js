@@ -10,6 +10,10 @@ const state = {
   numPages: 0,
   currentPage: 1,
   scale: config.settings.defaultScale,
+  // HiDPIスーパーサンプリング倍率: ユーザー設定 × デバイス画素密度
+  // 例: renderQuality=2.0, devicePixelRatio=2（Retina）→ 4倍解像度でレンダリング
+  qualityMultiplier:
+    (config.settings.renderQuality || 2.0) * (window.devicePixelRatio || 1),
   pageElements: [], // ページのDOM要素キャッシュ
   renderedPages: new Set(), // レンダリング済みページ番号
 };
@@ -56,17 +60,21 @@ async function renderAllPages() {
 
   for (let pageNum = 1; pageNum <= state.numPages; pageNum++) {
     const page = await state.pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: state.scale });
+    // 表示サイズはユーザー指定のscaleに基づく
+    const displayViewport = page.getViewport({ scale: state.scale });
 
     const pageDiv = document.createElement('div');
     pageDiv.className = 'pdf-page';
     pageDiv.dataset.pageNumber = String(pageNum);
-    pageDiv.style.width = `${viewport.width}px`;
-    pageDiv.style.height = `${viewport.height}px`;
+    pageDiv.style.width = `${displayViewport.width}px`;
+    pageDiv.style.height = `${displayViewport.height}px`;
 
+    // canvasは表示サイズで仮確保（実際の高解像度レンダリングはrenderPageで行う）
     const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    canvas.width = displayViewport.width;
+    canvas.height = displayViewport.height;
+    canvas.style.width = `${displayViewport.width}px`;
+    canvas.style.height = `${displayViewport.height}px`;
     pageDiv.appendChild(canvas);
 
     viewer.appendChild(pageDiv);
@@ -101,7 +109,7 @@ function setupLazyRender() {
   }
 }
 
-// 個別ページのレンダリング
+// 個別ページのレンダリング（HiDPI対応：内部解像度 = 表示サイズ × qualityMultiplier）
 async function renderPage(pageNum) {
   if (state.renderedPages.has(pageNum)) {
     return;
@@ -110,17 +118,26 @@ async function renderPage(pageNum) {
 
   try {
     const page = await state.pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: state.scale });
+    // 表示サイズ（CSS px）とレンダリングサイズ（物理px）を分離
+    const displayViewport = page.getViewport({ scale: state.scale });
+    const renderViewport = page.getViewport({
+      scale: state.scale * state.qualityMultiplier,
+    });
+
     const pageDiv = state.pageElements[pageNum - 1];
     const canvas = pageDiv.querySelector('canvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    pageDiv.style.width = `${viewport.width}px`;
-    pageDiv.style.height = `${viewport.height}px`;
+    // canvas内部解像度は高解像度（鮮明）
+    canvas.width = renderViewport.width;
+    canvas.height = renderViewport.height;
+    // CSS表示サイズは標準（ユーザーが指定した倍率）
+    canvas.style.width = `${displayViewport.width}px`;
+    canvas.style.height = `${displayViewport.height}px`;
+    pageDiv.style.width = `${displayViewport.width}px`;
+    pageDiv.style.height = `${displayViewport.height}px`;
 
-    await page.render({ canvasContext: ctx, viewport }).promise;
+    await page.render({ canvasContext: ctx, viewport: renderViewport }).promise;
   } catch (err) {
     console.error(`ページ ${pageNum} のレンダリングに失敗:`, err);
     state.renderedPages.delete(pageNum); // 再試行可能に
@@ -179,19 +196,25 @@ function scrollToFirstPage() {
   }
 }
 
-// 全ページの再レンダリング（倍率変更時など）
+// 全ページの再レンダリング（倍率変更・画質変更時など）
 async function rerenderAll() {
   state.renderedPages.clear();
   for (let i = 0; i < state.pageElements.length; i++) {
     const pageNum = i + 1;
     const page = await state.pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: state.scale });
+    const displayViewport = page.getViewport({ scale: state.scale });
+    const renderViewport = page.getViewport({
+      scale: state.scale * state.qualityMultiplier,
+    });
     const pageDiv = state.pageElements[i];
-    pageDiv.style.width = `${viewport.width}px`;
-    pageDiv.style.height = `${viewport.height}px`;
+    pageDiv.style.width = `${displayViewport.width}px`;
+    pageDiv.style.height = `${displayViewport.height}px`;
     const canvas = pageDiv.querySelector('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    // 内部解像度は高解像度、CSS表示は標準サイズ
+    canvas.width = renderViewport.width;
+    canvas.height = renderViewport.height;
+    canvas.style.width = `${displayViewport.width}px`;
+    canvas.style.height = `${displayViewport.height}px`;
   }
   // 可視範囲のみ即座に再レンダリング
   setupLazyRender();
@@ -231,6 +254,17 @@ function setupEventListeners() {
     const fitScale = (container.clientWidth - padding) / baseViewport.width;
     state.scale = Math.max(0.5, Math.min(3.0, fitScale));
     updateZoomIndicator();
+    await rerenderAll();
+  });
+
+  // 画質切替ボタン（1x → 2x → 3x → 4x → 1x の循環）
+  document.getElementById('btn-quality').addEventListener('click', async () => {
+    const dpr = window.devicePixelRatio || 1;
+    const userQuality = state.qualityMultiplier / dpr;
+    // 1x → 2x → 3x → 4x → 1x の循環
+    const next = userQuality >= 4.0 ? 1.0 : Math.round(userQuality + 1);
+    state.qualityMultiplier = next * dpr;
+    updateQualityIndicator();
     await rerenderAll();
   });
 
@@ -317,12 +351,29 @@ window.addEventListener('message', (event) => {
     document.body.dataset.direction = s.readingDirection;
     document.body.dataset.scroll = s.scrollMode;
     document.body.dataset.spread = String(s.spread);
-    if (s.defaultScale !== state.scale) {
+
+    // 画質設定の変更を反映（DPRと掛け合わせて実際の倍率に変換）
+    const newQuality =
+      (s.renderQuality || 2.0) * (window.devicePixelRatio || 1);
+    const qualityChanged = newQuality !== state.qualityMultiplier;
+    state.qualityMultiplier = newQuality;
+
+    if (s.defaultScale !== state.scale || qualityChanged) {
       state.scale = s.defaultScale;
       updateZoomIndicator();
+      updateQualityIndicator();
       rerenderAll();
     }
   }
 });
+
+// 画質インジケータ更新（ツールバーに表示）
+function updateQualityIndicator() {
+  const indicator = document.getElementById('quality-indicator');
+  if (indicator) {
+    const userQuality = state.qualityMultiplier / (window.devicePixelRatio || 1);
+    indicator.textContent = `画質 ${userQuality.toFixed(1)}x`;
+  }
+}
 
 main();

@@ -2,7 +2,7 @@
   "name": "rtl-pdf-viewer",
   "displayName": "RTL PDF Viewer",
   "description": "Read PDFs with right-to-left horizontal scrolling in VS Code (manga / Japanese book style)",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "cosara",
   "icon": "media/icon.png",
   "license": "MIT",
@@ -105,6 +105,13 @@
           "minimum": 0.5,
           "maximum": 3.0,
           "description": "初期表示倍率"
+        },
+        "rtlPdfViewer.renderQuality": {
+          "type": "number",
+          "default": 2.0,
+          "minimum": 1.0,
+          "maximum": 4.0,
+          "description": "レンダリング画質倍率（HiDPIスーパーサンプリング）。1.0=標準、2.0=高画質（推奨）、3.0=超高画質、4.0=最高画質。値が大きいほど鮮明だがメモリと時間を消費"
         }
       }
     }

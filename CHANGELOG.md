@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-05-03
+
+### Added
+- HiDPI / Retina display support: PDF pages now render at the device's
+  physical pixel resolution for crisp display on high-DPI screens.
+- New `rtlPdfViewer.renderQuality` setting (1.0–4.0, default 2.0) for
+  configurable supersampling. Higher values produce sharper output at
+  the cost of memory and rendering time.
+- Quality toggle button in the toolbar that cycles through 1x → 2x →
+  3x → 4x quality levels with live re-rendering.
+
+### Changed
+- Page rendering now decouples internal canvas resolution from CSS
+  display size, eliminating blur on Retina/4K displays.
+
 ## [0.0.2] - 2026-05-03
 
 ### Added

@@ -84,6 +84,7 @@ class RtlPdfEditorProvider implements vscode.CustomReadonlyEditorProvider<RtlPdf
       scrollMode: config.get<string>('scrollMode', 'horizontal'),
       spread: config.get<boolean>('spread', false),
       defaultScale: config.get<number>('defaultScale', 1.5),
+      renderQuality: config.get<number>('renderQuality', 2.0),
     };
 
     // PDFファイルへのWebView用URIを生成
@@ -114,6 +115,7 @@ class RtlPdfEditorProvider implements vscode.CustomReadonlyEditorProvider<RtlPdf
             scrollMode: newConfig.get('scrollMode'),
             spread: newConfig.get('spread'),
             defaultScale: newConfig.get('defaultScale'),
+            renderQuality: newConfig.get('renderQuality'),
           },
         });
       }
@@ -129,6 +131,7 @@ class RtlPdfEditorProvider implements vscode.CustomReadonlyEditorProvider<RtlPdf
       scrollMode: string;
       spread: boolean;
       defaultScale: number;
+      renderQuality: number;
     }
   ): string {
     const mediaRoot = vscode.Uri.joinPath(this.context.extensionUri, 'media');
@@ -170,6 +173,8 @@ class RtlPdfEditorProvider implements vscode.CustomReadonlyEditorProvider<RtlPdf
     <span id="zoom-indicator">${Math.round(settings.defaultScale * 100)}%</span>
     <button id="btn-zoom-in" title="拡大">＋</button>
     <button id="btn-zoom-fit" title="幅に合わせる">幅合わせ</button>
+    <span class="separator">|</span>
+    <button id="btn-quality" title="画質切替（1x→2x→3x→4x）">🔍 <span id="quality-indicator">画質 ${settings.renderQuality.toFixed(1)}x</span></button>
     <span class="separator">|</span>
     <button id="btn-toggle-direction" title="ページめくり方向">↔ 方向</button>
     <button id="btn-toggle-scroll" title="スクロール方向">⇅ スクロール</button>
