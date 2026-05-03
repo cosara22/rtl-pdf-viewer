@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-05-03
+
+### Added
+- Pinch zoom in 10% increments. Trackpad pinch (Ctrl+wheel) and
+  two-finger touch pinch are both supported.
+- Throttled rerender (120ms debounce) so rapid pinch gestures do
+  not trigger multiple expensive re-renders.
+
+### Changed
+- Zoom range expanded from 0.5–3.0 to 0.25–5.0.
+- Zoom buttons now use a shared `applyZoom` helper for consistency
+  with pinch behavior.
+
 ## [0.0.3] - 2026-05-03
 
 ### Added

@@ -18,6 +18,38 @@ const state = {
   renderedPages: new Set(), // レンダリング済みページ番号
 };
 
+// ズーム範囲・ステップ定数
+const ZOOM_MIN = 0.25;
+const ZOOM_MAX = 5.0;
+const ZOOM_STEP_PINCH = 0.1; // ピンチ操作1ステップ = 10%
+const ZOOM_STEP_BUTTON = 0.25; // ボタン操作1ステップ = 25%
+const PINCH_WHEEL_THRESHOLD = 30; // Ctrl+wheelで1ステップ進めるための累積deltaY
+
+// state.scaleを範囲内にクランプ
+function clampZoom(value) {
+  return Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, Math.round(value * 100) / 100));
+}
+
+// ズーム適用＋スロットルされた再レンダリング
+let rerenderTimer = null;
+function applyZoom(newScale) {
+  const clamped = clampZoom(newScale);
+  if (clamped === state.scale) {
+    return false;
+  }
+  state.scale = clamped;
+  updateZoomIndicator();
+  // 連続ピンチでの過剰な再レンダリングを抑制
+  if (rerenderTimer) {
+    clearTimeout(rerenderTimer);
+  }
+  rerenderTimer = setTimeout(() => {
+    rerenderTimer = null;
+    rerenderAll();
+  }, 120);
+  return true;
+}
+
 // PDF.jsを動的import（CSP対応）
 async function loadPdfJs() {
   const pdfjsLib = await import(config.pdfjsLib);
@@ -234,16 +266,12 @@ function setupEventListeners() {
   document.getElementById('btn-prev').addEventListener('click', prevPage);
   document.getElementById('btn-next').addEventListener('click', nextPage);
 
-  document.getElementById('btn-zoom-in').addEventListener('click', async () => {
-    state.scale = Math.min(state.scale + 0.25, 3.0);
-    updateZoomIndicator();
-    await rerenderAll();
+  document.getElementById('btn-zoom-in').addEventListener('click', () => {
+    applyZoom(state.scale + ZOOM_STEP_BUTTON);
   });
 
-  document.getElementById('btn-zoom-out').addEventListener('click', async () => {
-    state.scale = Math.max(state.scale - 0.25, 0.5);
-    updateZoomIndicator();
-    await rerenderAll();
+  document.getElementById('btn-zoom-out').addEventListener('click', () => {
+    applyZoom(state.scale - ZOOM_STEP_BUTTON);
   });
 
   document.getElementById('btn-zoom-fit').addEventListener('click', async () => {
@@ -252,9 +280,7 @@ function setupEventListeners() {
     const baseViewport = page.getViewport({ scale: 1.0 });
     const padding = 32;
     const fitScale = (container.clientWidth - padding) / baseViewport.width;
-    state.scale = Math.max(0.5, Math.min(3.0, fitScale));
-    updateZoomIndicator();
-    await rerenderAll();
+    applyZoom(fitScale);
   });
 
   // 画質切替ボタン（1x → 2x → 3x → 4x → 1x の循環）
@@ -332,8 +358,22 @@ function setupEventListeners() {
     }
   });
 
-  // マウスホイールで横スクロール（横モード時）
+  // マウスホイール: Ctrl押下時はピンチズーム、それ以外は横スクロール（横モード時）
+  let pinchAccumulator = 0;
   document.getElementById('viewer').addEventListener('wheel', (e) => {
+    // トラックパッドのピンチ操作は ctrlKey + wheel として届く
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      pinchAccumulator += e.deltaY;
+      // 閾値を超えるたびに10%ステップで変更
+      while (Math.abs(pinchAccumulator) >= PINCH_WHEEL_THRESHOLD) {
+        const direction = pinchAccumulator > 0 ? -1 : 1; // ホイール上=拡大
+        applyZoom(state.scale + ZOOM_STEP_PINCH * direction);
+        pinchAccumulator -= PINCH_WHEEL_THRESHOLD * (pinchAccumulator > 0 ? 1 : -1);
+      }
+      return;
+    }
+
     const scrollMode = document.body.dataset.scroll;
     if (scrollMode === 'horizontal' && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
@@ -341,6 +381,49 @@ function setupEventListeners() {
       viewer.scrollLeft += e.deltaY;
     }
   }, { passive: false });
+
+  // タッチスクリーンでの2本指ピンチズーム
+  let pinchInitialDistance = null;
+  let pinchInitialScale = null;
+  let pinchLastQuantizedScale = null;
+  const viewerEl = document.getElementById('viewer');
+
+  viewerEl.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      pinchInitialDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchInitialScale = state.scale;
+      pinchLastQuantizedScale = state.scale;
+    }
+  }, { passive: true });
+
+  viewerEl.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2 && pinchInitialDistance !== null) {
+      e.preventDefault();
+      const currentDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const ratio = currentDistance / pinchInitialDistance;
+      const targetScale = pinchInitialScale * ratio;
+      // 10%刻みに量子化
+      const quantized = Math.round(targetScale * 10) / 10;
+      if (quantized !== pinchLastQuantizedScale) {
+        pinchLastQuantizedScale = quantized;
+        applyZoom(quantized);
+      }
+    }
+  }, { passive: false });
+
+  const resetPinch = () => {
+    pinchInitialDistance = null;
+    pinchInitialScale = null;
+    pinchLastQuantizedScale = null;
+  };
+  viewerEl.addEventListener('touchend', resetPinch);
+  viewerEl.addEventListener('touchcancel', resetPinch);
 }
 
 // 拡張機能側からの設定変更通知を受信

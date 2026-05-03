@@ -2,7 +2,7 @@
   "name": "rtl-pdf-viewer",
   "displayName": "RTL PDF Viewer",
   "description": "Read PDFs with right-to-left horizontal scrolling in VS Code (manga / Japanese book style)",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "cosara",
   "icon": "media/icon.png",
   "license": "MIT",
@@ -102,8 +102,8 @@
         "rtlPdfViewer.defaultScale": {
           "type": "number",
           "default": 1.5,
-          "minimum": 0.5,
-          "maximum": 3.0,
+          "minimum": 0.25,
+          "maximum": 5.0,
           "description": "初期表示倍率"
         },
         "rtlPdfViewer.renderQuality": {
