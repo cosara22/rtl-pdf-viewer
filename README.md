@@ -23,49 +23,13 @@ A VS Code custom editor extension that lets you read PDFs with **right-to-left h
 
 Adobe Acrobat doesn't have a true horizontal scroll mode, and most PDF readers don't combine **horizontal scroll + RTL page order** — the natural way to read manga or Japanese books. Specialized comic readers exist (SumatraPDF, Honeyview), but if you live inside VS Code, switching apps just to read a book breaks the flow. This extension brings that reading experience directly into the editor.
 
-## Setup
+## Installation
 
-### 1. Install dependencies
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cosara.rtl-pdf-viewer), or open the Extensions view (`Ctrl+Shift+X`) and search for **RTL PDF Viewer**.
 
-```powershell
-cd rtl-pdf-viewer
-npm install
-```
+That is all. PDF.js ships inside the extension, so there is nothing to download, build, or configure. Open any PDF, pick **RTL PDF Viewer** from the editor selector, and you are reading.
 
-### 2. Download PDF.js
-
-```powershell
-npm run setup
-```
-
-This downloads PDF.js v4.7.76 into `media/pdfjs/`.
-
-### 3. Compile TypeScript
-
-```powershell
-npm run compile
-```
-
-### 4. Run in development mode (recommended)
-
-1. Open the `rtl-pdf-viewer` folder in VS Code
-2. Press `F5` → Extension Development Host opens in a new window
-3. In the new window, open any PDF — "RTL PDF Viewer" appears in the editor selector
-4. To make it default: Right-click PDF → "Open With..." → "RTL PDF Viewer" → "Configure default editor for .pdf"
-
-### 5. Package as VSIX
-
-```powershell
-npm run package
-```
-
-Generates `rtl-pdf-viewer-0.0.1.vsix`.
-
-### 6. Install the VSIX
-
-```powershell
-code --install-extension rtl-pdf-viewer-0.0.1.vsix
-```
+> Building from source instead? See [Development](#development).
 
 ## Usage
 
@@ -184,6 +148,50 @@ These are future enhancement targets.
 - **VS Code Custom Editor API** — `CustomReadonlyEditorProvider`
 - **PDF.js** v4.7.76 — Mozilla's PDF rendering engine
 - **WebView API** — sandboxed HTML/CSS/JS rendering
+
+## Development
+
+### 1. Install dependencies
+
+```powershell
+cd rtl-pdf-viewer
+npm install
+```
+
+### 2. Download PDF.js
+
+```powershell
+npm run setup
+```
+
+This downloads PDF.js v4.7.76 into `media/pdfjs/`.
+
+### 3. Compile TypeScript
+
+```powershell
+npm run compile
+```
+
+### 4. Run in development mode (recommended)
+
+1. Open the `rtl-pdf-viewer` folder in VS Code
+2. Press `F5` → Extension Development Host opens in a new window
+3. In the new window, open any PDF — "RTL PDF Viewer" appears in the editor selector
+4. To make it default: Right-click PDF → "Open With..." → "RTL PDF Viewer" → "Configure default editor for .pdf"
+
+### 5. Package as VSIX
+
+```powershell
+npm run package
+```
+
+Generates `rtl-pdf-viewer-<version>.vsix` in the repository root.
+
+### 6. Install the VSIX
+
+```powershell
+code --install-extension rtl-pdf-viewer-<version>.vsix
+```
 
 ## Contributing
 

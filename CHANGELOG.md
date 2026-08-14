@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-08-15
+
+### Changed
+- Restructured the README so the Marketplace page speaks to readers before
+  contributors. `Installation` now sits where the build instructions used to be,
+  and the `npm install` / PDF.js download / TypeScript compile steps moved down
+  to a `Development` section.
+
+  The extension ships PDF.js inside the package (`media/pdfjs/pdf.min.mjs` and
+  `pdf.worker.min.mjs`, verified in the published 0.0.4 VSIX), so anyone
+  installing from the Marketplace has nothing to download or build. The old
+  layout implied otherwise on the first screen of the extension page.
+
+### Fixed
+- The packaging step no longer names a stale artifact (`rtl-pdf-viewer-0.0.1.vsix`
+  when the current version was 0.0.4).
+
 ## [0.0.4] - 2026-05-03
 
 ### Added

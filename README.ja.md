@@ -14,49 +14,13 @@ VS Code 上で PDF を **右から左への横スクロール**（漫画・縦�
 - ✅ 設定で初期表示モードを変更可能
 - ✅ ツールバーから即座に方向切り替え
 
-## セットアップ手順
+## インストール
 
-### 1. 依存パッケージのインストール
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cosara.rtl-pdf-viewer) から入れるか、拡張機能ビュー（`Ctrl+Shift+X`）で **RTL PDF Viewer** を検索してください。
 
-```powershell
-cd "c:\Users\zeroz\Projects\金持ち父さん貧乏父さん\rtl-pdf-viewer"
-npm install
-```
+これだけです。PDF.js は拡張に同梱しているので、ダウンロードもビルドも設定も要りません。PDF を開いてエディタの選択肢から **RTL PDF Viewer** を選べば読み始められます。
 
-### 2. PDF.js の取得
-
-```powershell
-npm run setup
-```
-
-`media/pdfjs/` 配下に PDF.js v4.7.76 がダウンロードされます。
-
-### 3. TypeScript のコンパイル
-
-```powershell
-npm run compile
-```
-
-### 4. デバッグ実行（推奨：開発時）
-
-1. VS Code でこの `rtl-pdf-viewer` フォルダを開く
-2. `F5` キーを押す → 拡張機能ホストが新しいウィンドウで起動
-3. 新ウィンドウ側で PDF ファイルを開くと、エディタ選択肢に「RTL PDF Viewer」が表示される
-4. 既定で開きたい場合: PDFを右クリック →「アプリケーションを使って開く」→「RTL PDF Viewer」→「.pdfファイルの既定として構成」
-
-### 5. パッケージング（インストール用VSIX作成）
-
-```powershell
-npm run package
-```
-
-`rtl-pdf-viewer-0.0.1.vsix` が生成されます。
-
-### 6. インストール
-
-```powershell
-code --install-extension rtl-pdf-viewer-0.0.1.vsix
-```
+> ソースからビルドする場合は [開発](#開発) を参照してください。
 
 ## 使い方
 
@@ -146,6 +110,50 @@ rtl-pdf-viewer/
 ### コンパイルエラーが出る
 - `npm install` が成功しているか確認
 - `node_modules/@types/vscode` が存在するか確認
+
+## 開発
+
+### 1. 依存パッケージのインストール
+
+```powershell
+cd "c:\Users\zeroz\Projects\金持ち父さん貧乏父さん\rtl-pdf-viewer"
+npm install
+```
+
+### 2. PDF.js の取得
+
+```powershell
+npm run setup
+```
+
+`media/pdfjs/` 配下に PDF.js v4.7.76 がダウンロードされます。
+
+### 3. TypeScript のコンパイル
+
+```powershell
+npm run compile
+```
+
+### 4. デバッグ実行（推奨：開発時）
+
+1. VS Code でこの `rtl-pdf-viewer` フォルダを開く
+2. `F5` キーを押す → 拡張機能ホストが新しいウィンドウで起動
+3. 新ウィンドウ側で PDF ファイルを開くと、エディタ選択肢に「RTL PDF Viewer」が表示される
+4. 既定で開きたい場合: PDFを右クリック →「アプリケーションを使って開く」→「RTL PDF Viewer」→「.pdfファイルの既定として構成」
+
+### 5. パッケージング（インストール用VSIX作成）
+
+```powershell
+npm run package
+```
+
+リポジトリ直下に `rtl-pdf-viewer-<version>.vsix` が生成されます。
+
+### 6. インストール
+
+```powershell
+code --install-extension rtl-pdf-viewer-<version>.vsix
+```
 
 ## ライセンス
 
