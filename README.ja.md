@@ -14,6 +14,10 @@ VS Code で PDF を右から左への横スクロールで読めるカスタム�
 - 初期表示モードを設定で変更
 - ツールバーのボタンで表示の向きを切り替え
 
+## データの扱い
+
+この拡張機能は、開いた PDF を VS Code の中で表示するだけです。外部のサーバーへの通信や、利用データの収集はしません。表示画面の通信先は、拡張機能に同梱したファイルに限っています。
+
 ## インストール
 
 [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cosara.rtl-pdf-viewer) から入れるか、拡張機能ビュー（`Ctrl+Shift+X`）で「RTL PDF Viewer」を検索してください。

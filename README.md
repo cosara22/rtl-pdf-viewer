@@ -19,6 +19,10 @@ A VS Code custom editor extension that lets you read PDFs with **right-to-left h
 - Toolbar buttons to switch the reading direction
 - Lazy page rendering with IntersectionObserver
 
+## Data and privacy
+
+This extension only displays the PDF you open inside VS Code. It does not connect to external servers or collect usage data. The viewer's Content Security Policy limits connections to files bundled with the extension.
+
 ## Why this exists
 
 Adobe Acrobat doesn't have a true horizontal scroll mode, and most PDF readers don't combine **horizontal scroll + RTL page order** — the natural way to read manga or Japanese books. Specialized comic readers exist (SumatraPDF, Honeyview), but if you live inside VS Code, switching apps just to read a book breaks the flow. This extension brings that reading experience directly into the editor.
