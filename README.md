@@ -10,14 +10,14 @@ A VS Code custom editor extension that lets you read PDFs with **right-to-left h
 
 ## Features
 
-- ✅ **Right-to-left horizontal scrolling** (manga / Japanese book style)
-- ✅ **Left-to-right horizontal scrolling** (Western book style)
-- ✅ **Vertical scrolling** (standard mode)
-- ✅ Page navigation with arrow keys (auto-inverted in RTL mode)
-- ✅ Zoom controls (zoom in / out / fit-to-width)
-- ✅ Configurable defaults via settings
-- ✅ Toolbar for instant direction switching
-- ✅ Lazy page rendering with IntersectionObserver
+- Right-to-left horizontal scrolling (manga / Japanese book style)
+- Left-to-right horizontal scrolling (Western book style)
+- Vertical scrolling (standard mode)
+- Page navigation with arrow keys (auto-inverted in RTL mode)
+- Zoom controls (zoom in / out / fit-to-width)
+- Configurable defaults via settings
+- Toolbar buttons to switch the reading direction
+- Lazy page rendering with IntersectionObserver
 
 ## Why this exists
 
@@ -27,7 +27,7 @@ Adobe Acrobat doesn't have a true horizontal scroll mode, and most PDF readers d
 
 Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=cosara.rtl-pdf-viewer), or open the Extensions view (`Ctrl+Shift+X`) and search for **RTL PDF Viewer**.
 
-That is all. PDF.js ships inside the extension, so there is nothing to download, build, or configure. Open any PDF, pick **RTL PDF Viewer** from the editor selector, and you are reading.
+PDF.js ships inside the extension, so there is nothing else to download, build, or configure. Open a PDF and pick RTL PDF Viewer from the editor selector to view it.
 
 > Building from source instead? See [Development](#development).
 
